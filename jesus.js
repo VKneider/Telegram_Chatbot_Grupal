@@ -11,12 +11,13 @@ const instance = axios.create({
 });
 const translate = require('translate-google')
 
+var lenguaje = 'es';
 
 
-const BUTTONS = {
+let BUTTONS = {
 
     productos: {
-        label: 'Mostrar productos',
+        label: 'Mostrar productos', 
         command: '/productos'
     },
     pagos: {
@@ -46,6 +47,14 @@ const BUTTONS = {
     verCarrito: {
         label: 'Ver el carrito de compras',
         command: '/verCarrito'
+    }, 
+    idioma: {
+        label: 'Cambiar Idioma',
+        command: '/idioma'
+    }, 
+    switch: {
+        label: '/restart',
+        command: '/start'
     }
 
 
@@ -142,36 +151,24 @@ bot.on('ask.id', msg => {
 
 })
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
-
-function  traducir (text,msg,replyMarkup){
+function  traducir (lenguaje, text,msg,replyMarkup){
 
     if(!replyMarkup){
         
-        translate(text, {to: 'es'}).then(res => {
+        translate(text, {to: lenguaje}).then(res => {
             
             bot.sendMessage(msg.from.id, res  ) })
             .catch(err => {
             console.error(err)
         });
     } else {
-
-        for(let i=0; i<replyMarkup.keyboard.length;i++){
-
-            for (let j in  replyMarkup.keyboard[i]){
-                
-             translate(replyMarkup.keyboard[i], {to: 'en'}).then(res=> {
-            replyMarkup.keyboard[i]=res;
-            
-
-             }).catch(err => {
-                console.error(err)
-            });
-
-            }
-        }
-        translate(text, {to: 'en'}).then(res => {
+        
+        translate(text, {to: lenguaje}).then(res => {
             
             bot.sendMessage(msg.from.id, res, { replyMarkup }  ) })
             .catch(err => {
@@ -184,11 +181,65 @@ function  traducir (text,msg,replyMarkup){
     }
 
 
-function traducirBotones(arrayLabels, msg){
+function traducirBotones(BUTTONS, lenguaje){
 
+        translate(BUTTONS.productos.label, {to: lenguaje}).then(res => {
+                
+            BUTTONS.productos.label = res;  })
+                .catch(err => {
+                console.error(err)
+            });
     
 
+        translate(BUTTONS.idioma.label, {to: lenguaje}).then(res => {
+                
+            BUTTONS.idioma.label = res;  })
+                .catch(err => {
+                console.error(err)
+            });
 
+        translate(BUTTONS.pagos.label, {to: lenguaje}).then(res => {
+                
+            BUTTONS.pagos.label = res;  })
+                .catch(err => {
+                console.error(err)
+            });
+
+        translate(BUTTONS.entrega.label, {to: lenguaje}).then(res => {
+                
+            BUTTONS.entrega.label = res;  })
+                .catch(err => {
+                console.error(err)
+            });
+
+        translate(BUTTONS.carrito.label, {to: lenguaje}).then(res => {
+                
+                BUTTONS.carrito.label = res;  })
+                    .catch(err => {
+                    console.error(err)
+                });
+
+        translate(BUTTONS.buscar.label, {to: lenguaje}).then(res => {
+                
+                BUTTONS.buscar.label = res;  })
+                    .catch(err => {
+                    console.error(err)
+                });
+        
+
+        translate(BUTTONS.inicio.label, {to: lenguaje}).then(res => {
+                
+                 BUTTONS.inicio.label = res;  })
+                    .catch(err => {
+                    console.error(err)
+                 }); 
+                 
+        translate(BUTTONS.buscarOtro.label, {to: lenguaje}).then(res => {
+                
+                 BUTTONS.buscarOtro.label = res;  })
+                    .catch(err => {
+                    console.error(err)
+                 }); 
 }
 
 bot.on('/pagos', (msg) => {
@@ -205,7 +256,7 @@ bot.on('/pagos', (msg) => {
         *ETH
         *USTD`
 
-   return traducir(texto, msg);
+   return traducir(lenguaje,texto, msg);
 });
 
 
@@ -215,19 +266,44 @@ bot.on('/start', (msg) => {
 
     let replyMarkup = bot.keyboard([
         [BUTTONS.productos.label, BUTTONS.pagos.label],
-        [BUTTONS.entrega.label]
+        [BUTTONS.entrega.label, BUTTONS.idioma.label]
     ], {
         resize: true
     });
 
     
     let texto = 'Bienvenido a la tienda. \n Elija la opcion de su preferencia';
-    return traducir(texto,msg,replyMarkup)
-    
-    
+    return traducir(lenguaje,texto,msg,replyMarkup,lenguaje) 
 
 });
 
+
+bot.on('/entrega', (msg) => {
+
+    bot.sendMessage(msg.from.id, 'entrega');
+    
+});
+
+
+bot.on('/idioma', (msg) => {
+    
+    let replyMarkup = bot.keyboard([
+        [BUTTONS.switch.label],
+        
+    ], {
+        resize: true
+    });
+
+   if(lenguaje==='es'){lenguaje='en'} else { lenguaje= 'es'}; //si es español pasarlo a ingles, y si no es español es ingles y pasarlo a español
+   console.log(lenguaje);
+   
+
+    traducirBotones(BUTTONS, lenguaje);
+    
+    return traducir(lenguaje,'Lenguaje cambiado. Presiona el botón',msg,replyMarkup);    
+    
+
+});
 
 bot.start();
 
