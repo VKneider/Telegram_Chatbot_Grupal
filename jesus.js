@@ -9,6 +9,7 @@ const instance = axios.create({
     baseURL: 'https://some-domain.com/api/',
     timeout: 1000
 });
+const translate = require('translate-google')
 
 
 
@@ -96,9 +97,13 @@ bot.on('/productos', (msg) => {
 
 //Buscar producto
 bot.on('/buscar', (msg) => {
+
+    let texto="A continuacion introduzca el id del producto que desea consultar";
+    
     return bot.sendMessage(msg.chat.id, ' A continuacion introduzca el id del producto que desea consultar', {
         ask: 'id'
     });
+
 })
 
 
@@ -140,18 +145,69 @@ bot.on('ask.id', msg => {
 
 
 
+function  traducir (text,msg,replyMarkup){
+
+    if(!replyMarkup){
+        
+        translate(text, {to: 'es'}).then(res => {
+            
+            bot.sendMessage(msg.from.id, res  ) })
+            .catch(err => {
+            console.error(err)
+        });
+    } else {
+
+        for(let i=0; i<replyMarkup.keyboard.length;i++){
+
+            for (let j in  replyMarkup.keyboard[i]){
+                
+             translate(replyMarkup.keyboard[i], {to: 'en'}).then(res=> {
+            replyMarkup.keyboard[i]=res;
+            
+
+             }).catch(err => {
+                console.error(err)
+            });
+
+            }
+        }
+        translate(text, {to: 'en'}).then(res => {
+            
+            bot.sendMessage(msg.from.id, res, { replyMarkup }  ) })
+            .catch(err => {
+            console.error(err)
+        });
+
+            
+        }
+
+    }
+
+
+function traducirBotones(arrayLabels, msg){
+
+    
+
+
+}
+
 bot.on('/pagos', (msg) => {
-    msg.reply.text(`Los metodos de pago son: \n
-- Efectivo 
 
-- Transferencia 
+    texto= `Los metodos de pago son: \n
+    - Efectivo 
 
-- Criptomonedas recibidas:
-    *BTC
-    *ETH
-    *USTD`);
+    
+    - Transferencia 
+
+    
+    - Criptomonedas recibidas:
+        *BTC
+        *ETH
+        *USTD`
+
+   return traducir(texto, msg);
 });
-bot.on('/entrega', (msg) => msg.reply.text('esto es entrega'));
+
 
 // menu inicial
 
@@ -164,12 +220,14 @@ bot.on('/start', (msg) => {
         resize: true
     });
 
-    return bot.sendMessage(msg.from.id, 'Bienvenido a la tienda. \n Elija la opcion de su preferencia', {
-        replyMarkup
-    });
+    
+    let texto = 'Bienvenido a la tienda. \n Elija la opcion de su preferencia';
+    return traducir(texto,msg,replyMarkup)
+    
+    
+
 });
 
 
 bot.start();
-
 
