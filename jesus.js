@@ -17,16 +17,16 @@ var lenguaje = 'es';
 let BUTTONS = {
 
     productos: {
-        label: 'Mostrar productos', 
+        label: 'Productos 💻', 
         command: '/productos'
     },
     pagos: {
-        label: 'Mostrar metodos de pago',
-        command: '/pagos'
+        label: 'Carrito de Compras 🛒',
+        command: '/carrito'
     },
     entrega: {
-        label: 'Ver zonas de entrega y horario de trabajo',
-        command: '/entrega'
+        label: 'Información 🔰',
+        command: '/info'
     },
     buscar: {
         label: 'Elegir producto',
@@ -49,7 +49,7 @@ let BUTTONS = {
         command: '/verCarrito'
     }, 
     idioma: {
-        label: 'Cambiar Idioma',
+        label: 'Cambiar Idioma 💬',
         command: '/idioma'
     }, 
     switch: {
@@ -156,106 +156,17 @@ function sleep(ms) {
 }
 
 
-function  traducir (lenguaje, text,msg,replyMarkup){
 
-    if(!replyMarkup){
-        
-        translate(text, {to: lenguaje}).then(res => {
-            
-            bot.sendMessage(msg.from.id, res  ) })
-            .catch(err => {
-            console.error(err)
-        });
-    } else {
-        
-        translate(text, {to: lenguaje}).then(res => {
-            
-            bot.sendMessage(msg.from.id, res, { replyMarkup }  ) })
-            .catch(err => {
-            console.error(err)
-        });
-
-            
-        }
-
-    }
-
-
-function traducirBotones(BUTTONS, lenguaje){
-
-        translate(BUTTONS.productos.label, {to: lenguaje}).then(res => {
-                
-            BUTTONS.productos.label = res;  })
-                .catch(err => {
-                console.error(err)
-            });
-    
-
-        translate(BUTTONS.idioma.label, {to: lenguaje}).then(res => {
-                
-            BUTTONS.idioma.label = res;  })
-                .catch(err => {
-                console.error(err)
-            });
-
-        translate(BUTTONS.pagos.label, {to: lenguaje}).then(res => {
-                
-            BUTTONS.pagos.label = res;  })
-                .catch(err => {
-                console.error(err)
-            });
-
-        translate(BUTTONS.entrega.label, {to: lenguaje}).then(res => {
-                
-            BUTTONS.entrega.label = res;  })
-                .catch(err => {
-                console.error(err)
-            });
-
-        translate(BUTTONS.carrito.label, {to: lenguaje}).then(res => {
-                
-                BUTTONS.carrito.label = res;  })
-                    .catch(err => {
-                    console.error(err)
-                });
-
-        translate(BUTTONS.buscar.label, {to: lenguaje}).then(res => {
-                
-                BUTTONS.buscar.label = res;  })
-                    .catch(err => {
-                    console.error(err)
-                });
-        
-
-        translate(BUTTONS.inicio.label, {to: lenguaje}).then(res => {
-                
-                 BUTTONS.inicio.label = res;  })
-                    .catch(err => {
-                    console.error(err)
-                 }); 
-                 
-        translate(BUTTONS.buscarOtro.label, {to: lenguaje}).then(res => {
-                
-                 BUTTONS.buscarOtro.label = res;  })
-                    .catch(err => {
-                    console.error(err)
-                 }); 
-}
-
-bot.on('/pagos', (msg) => {
+bot.on('/carrito', (msg) => {
 
     texto= `Los metodos de pago son: \n
     - Efectivo 
-
-    
     - Transferencia 
-
-    
     - Criptomonedas recibidas:
         *BTC
         *ETH
         *USTD`
-
+        
    return traducir(lenguaje,texto, msg);
 });
 
@@ -278,7 +189,7 @@ bot.on('/start', (msg) => {
 });
 
 
-bot.on('/entrega', (msg) => {
+bot.on('/info', (msg) => {
 
     bot.sendMessage(msg.from.id, 'entrega');
     
@@ -297,13 +208,99 @@ bot.on('/idioma', (msg) => {
    if(lenguaje==='es'){lenguaje='en'} else { lenguaje= 'es'}; //si es español pasarlo a ingles, y si no es español es ingles y pasarlo a español
    console.log(lenguaje);
    
-
-    traducirBotones(BUTTONS, lenguaje);
+   
+   traducirBotones(BUTTONS, lenguaje);
     
     return traducir(lenguaje,'Lenguaje cambiado. Presiona el botón',msg,replyMarkup);    
     
-
+    
 });
 
-bot.start();
 
+function  traducir (lenguaje, text,msg,replyMarkup){
+    
+    if(!replyMarkup){
+            
+        translate(text, {to: lenguaje}).then(res => {
+            
+            bot.sendMessage(msg.from.id, res  ) })
+            .catch(err => {
+                console.error(err)
+            });
+        } else {
+            
+            translate(text, {to: lenguaje}).then(res => {
+                
+                bot.sendMessage(msg.from.id, res, { replyMarkup }  ) })
+                .catch(err => {
+                    console.error(err)
+                });
+                
+                
+            }
+            
+        }
+        
+        
+        function traducirBotones(BUTTONS, lenguaje){
+    
+            translate(BUTTONS.productos.label, {to: lenguaje}).then(res => {
+                
+                BUTTONS.productos.label = res;  })
+                .catch(err => {
+                    console.error(err)
+                });
+                
+                
+                translate(BUTTONS.idioma.label, {to: lenguaje}).then(res => {
+                    
+                    BUTTONS.idioma.label = res;  })
+                    .catch(err => {
+                        console.error(err)
+                    });
+                    
+                    translate(BUTTONS.pagos.label, {to: lenguaje}).then(res => {
+                        
+                BUTTONS.pagos.label = res;  })
+                .catch(err => {
+                    console.error(err)
+                });
+    
+                translate(BUTTONS.entrega.label, {to: lenguaje}).then(res => {
+                    
+                BUTTONS.entrega.label = res;  })
+                .catch(err => {
+                    console.error(err)
+                });
+    
+            translate(BUTTONS.carrito.label, {to: lenguaje}).then(res => {
+                
+                BUTTONS.carrito.label = res;  })
+                .catch(err => {
+                        console.error(err)
+                    });
+                    
+                    translate(BUTTONS.buscar.label, {to: lenguaje}).then(res => {
+                        
+                        BUTTONS.buscar.label = res;  })
+                        .catch(err => {
+                            console.error(err)
+                        });
+                        
+                        
+                        translate(BUTTONS.inicio.label, {to: lenguaje}).then(res => {
+                            
+                     BUTTONS.inicio.label = res;  })
+                     .catch(err => {
+                         console.error(err)
+                        }); 
+                     
+                        translate(BUTTONS.buscarOtro.label, {to: lenguaje}).then(res => {
+                    
+                     BUTTONS.buscarOtro.label = res;  })
+                        .catch(err => {
+                        console.error(err)
+                     }); 
+                    }
+
+                    bot.start();
